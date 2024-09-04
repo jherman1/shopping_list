@@ -4,18 +4,27 @@ import 'package:shopping_list/screens/new_item.dart';
 // import 'package:shopping_list/widgets/grocery_item_row.dart';
 
 class GroceryListScreen extends StatefulWidget {
-  const GroceryListScreen({super.key, required this.groceryItems});
-
-  final List<GroceryItem> groceryItems;
+  const GroceryListScreen({super.key});
 
   @override
   State<GroceryListScreen> createState() => _GroceryListScreenState();
 }
 
 class _GroceryListScreenState extends State<GroceryListScreen> {
-  void _addItem() {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (ctx) => const NewItemScreen()));
+  final List<GroceryItem> _groceryItems = [];
+
+  void _addItem() async {
+    final newItem = await Navigator.of(context).push<GroceryItem>(
+      MaterialPageRoute(
+        builder: (ctx) => const NewItemScreen(),
+      ),
+    );
+    if(newItem == null) {
+      return;
+    }
+    setState(() {
+      _groceryItems.add(newItem);
+    });
   }
 
   @override
@@ -34,19 +43,19 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
       ),
     );
 
-    if (widget.groceryItems.isNotEmpty) {
+    if (_groceryItems.isNotEmpty) {
       content = ListView.builder(
-        itemCount: widget.groceryItems.length,
+        itemCount: _groceryItems.length,
         itemBuilder: (ctx, index) {
           // return GroceryItemRow(groceryItem: groceryItems[index]);
           return ListTile(
-            title: Text(widget.groceryItems[index].name),
+            title: Text(_groceryItems[index].name),
             leading: Container(
               width: 24,
               height: 24,
-              color: widget.groceryItems[index].category.color,
+              color: _groceryItems[index].category.color,
             ),
-            trailing: Text(widget.groceryItems[index].quantity.toString()),
+            trailing: Text(_groceryItems[index].quantity.toString()),
           ); //List tile is a built in widget that basically does what my custom widget GroceryItemRow does
         },
       );
