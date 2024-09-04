@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shopping_list/models/grocery_item.dart';
-import 'package:shopping_list/widgets/grocery_item_row.dart';
+// import 'package:shopping_list/widgets/grocery_item_row.dart';
 
 class GroceryListScreen extends StatelessWidget {
   const GroceryListScreen({super.key, required this.groceryItems});
@@ -25,10 +25,20 @@ class GroceryListScreen extends StatelessWidget {
 
     if (groceryItems.isNotEmpty) {
       content = ListView.builder(
-          itemCount: groceryItems.length,
-          itemBuilder: (ctx, index) {
-            return GroceryItemRow(groceryItem: groceryItems[index]);
-          });
+        itemCount: groceryItems.length,
+        itemBuilder: (ctx, index) {
+          // return GroceryItemRow(groceryItem: groceryItems[index]);
+          return ListTile(
+            title: Text(groceryItems[index].name),
+            leading: Container(
+              width: 24,
+              height: 24,
+              color: groceryItems[index].category.color,
+            ),
+            trailing: Text(groceryItems[index].quantity.toString()),
+          ); //List tile is a built in widget that basically does what my custom widget GroceryItemRow does
+        },
+      );
     }
 
     return Scaffold(
