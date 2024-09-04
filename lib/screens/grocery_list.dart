@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:shopping_list/models/grocery_item.dart';
+import 'package:shopping_list/screens/new_item.dart';
 // import 'package:shopping_list/widgets/grocery_item_row.dart';
 
-class GroceryListScreen extends StatelessWidget {
+class GroceryListScreen extends StatefulWidget {
   const GroceryListScreen({super.key, required this.groceryItems});
 
   final List<GroceryItem> groceryItems;
+
+  @override
+  State<GroceryListScreen> createState() => _GroceryListScreenState();
+}
+
+class _GroceryListScreenState extends State<GroceryListScreen> {
+  void _addItem() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (ctx) => const NewItemScreen()));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,19 +34,19 @@ class GroceryListScreen extends StatelessWidget {
       ),
     );
 
-    if (groceryItems.isNotEmpty) {
+    if (widget.groceryItems.isNotEmpty) {
       content = ListView.builder(
-        itemCount: groceryItems.length,
+        itemCount: widget.groceryItems.length,
         itemBuilder: (ctx, index) {
           // return GroceryItemRow(groceryItem: groceryItems[index]);
           return ListTile(
-            title: Text(groceryItems[index].name),
+            title: Text(widget.groceryItems[index].name),
             leading: Container(
               width: 24,
               height: 24,
-              color: groceryItems[index].category.color,
+              color: widget.groceryItems[index].category.color,
             ),
-            trailing: Text(groceryItems[index].quantity.toString()),
+            trailing: Text(widget.groceryItems[index].quantity.toString()),
           ); //List tile is a built in widget that basically does what my custom widget GroceryItemRow does
         },
       );
@@ -44,6 +55,12 @@ class GroceryListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Groceries'),
+        actions: [
+          IconButton(
+            onPressed: _addItem,
+            icon: const Icon(Icons.add),
+          )
+        ],
       ),
       body: content,
     );
