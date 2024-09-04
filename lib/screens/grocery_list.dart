@@ -19,7 +19,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         builder: (ctx) => const NewItemScreen(),
       ),
     );
-    if(newItem == null) {
+    if (newItem == null) {
       return;
     }
     setState(() {
@@ -27,19 +27,20 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     });
   }
 
+  void _removeItem(GroceryItem item) {
+    setState(() {
+      _groceryItems.remove(item);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget content = Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            'Uh Oh ... nothing here!',
-            style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
-          ),
-        ],
+      child: Text(
+        'No Items added yet.',
+        style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
       ),
     );
 
@@ -48,14 +49,24 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
         itemCount: _groceryItems.length,
         itemBuilder: (ctx, index) {
           // return GroceryItemRow(groceryItem: groceryItems[index]);
-          return ListTile(
-            title: Text(_groceryItems[index].name),
-            leading: Container(
-              width: 24,
-              height: 24,
-              color: _groceryItems[index].category.color,
+          return Dismissible(
+            key: ValueKey(_groceryItems[index].id),
+            background: Container(
+              color: Theme.of(context).colorScheme.error.withOpacity(0.75),
+              margin: const EdgeInsets.symmetric(horizontal: 24),
             ),
-            trailing: Text(_groceryItems[index].quantity.toString()),
+            onDismissed: (direction) {
+              _removeItem(_groceryItems[index]);
+            },
+            child: ListTile(
+              title: Text(_groceryItems[index].name),
+              leading: Container(
+                width: 24,
+                height: 24,
+                color: _groceryItems[index].category.color,
+              ),
+              trailing: Text(_groceryItems[index].quantity.toString()),
+            ),
           ); //List tile is a built in widget that basically does what my custom widget GroceryItemRow does
         },
       );
