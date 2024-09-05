@@ -23,10 +23,14 @@ class _NewItemScreenState extends State<NewItemScreen> {
   var _enteredName = '';
   var _enteredQuantity = 1;
   var _selectedCategory = categories[Categories.vegetables]!;
+  var _isSending = false;
 
   void _saveItem() async {
     if (_formKey.currentState!.validate()) {
       //returns true if all validator()'s complete properly.
+      setState(() {
+        _isSending = true;
+      });
       _formKey.currentState!.save(); //executes all onSaved()
       final url = Uri.https(
           'flutter-learning-c4a0f-default-rtdb.firebaseio.com',
@@ -146,14 +150,14 @@ class _NewItemScreenState extends State<NewItemScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: () {
+                    onPressed: _isSending ? null : () {
                       _formKey.currentState!.reset();
                     },
                     child: const Text('Reset'),
                   ),
                   ElevatedButton(
-                    onPressed: _saveItem,
-                    child: const Text('Add Item'),
+                    onPressed: _isSending ? null : _saveItem,
+                    child: _isSending ? const CircularProgressIndicator() : const Text('Add Item'),
                   ),
                 ],
               ),
