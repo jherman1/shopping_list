@@ -18,6 +18,7 @@ class GroceryListScreen extends StatefulWidget {
 class _GroceryListScreenState extends State<GroceryListScreen> {
   List<GroceryItem> _groceryItems = [];
   var _isLoading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -29,6 +30,12 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     final url = Uri.https('flutter-learning-c4a0f-default-rtdb.firebaseio.com',
         'shopping-list.json');
     final response = await http.get(url);
+
+    if (response.statusCode >= 400) {
+      setState(() {
+        _error = 'Failed to fetch data.\nPlease try again later.';  
+      });
+    }
 
     final Map<String, dynamic> listData = json.decode(response.body);
     final List<GroceryItem> loadedItems = [];
@@ -86,6 +93,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     if (_isLoading) {
       content = const Center(child: CircularProgressIndicator());
     }
+    
 
     if (_groceryItems.isNotEmpty) {
       content = ListView.builder(
@@ -112,6 +120,17 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
             ),
           ); //List tile is a built in widget that basically does what my custom widget GroceryItemRow does
         },
+      );
+    }
+
+    if (_error != null) {
+      content = Center(
+        child: Text(
+          _error!,
+          style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                color: Theme.of(context).colorScheme.error,
+              ),
+        ),
       );
     }
 
