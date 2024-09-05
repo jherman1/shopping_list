@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shopping_list/data/categories.dart';
+import 'package:shopping_list/data/dummy_items.dart';
 
 import 'package:shopping_list/models/grocery_item.dart';
 import 'package:shopping_list/screens/new_item.dart';
@@ -33,7 +34,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
 
     if (response.statusCode >= 400) {
       setState(() {
-        _error = 'Failed to fetch data.\nPlease try again later.';  
+        _error = 'Failed to fetch data.\nPlease try again later.';
       });
     }
 
@@ -73,10 +74,23 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     });
   }
 
-  void _removeItem(GroceryItem item) {
+  void _removeItem(GroceryItem item) async {
+    final index = _groceryItems.indexOf(item);
     setState(() {
       _groceryItems.remove(item);
     });
+
+    final url = Uri.https('flutter-learning-c4a0f-default-rtdb.firebaseio.com',
+        'shopping-list/${item.id}.json');
+
+    final response = await http.delete(url);
+
+    if (response.statusCode >= 400) {
+      //Optional: add error message for being unable to remove
+      setState(() {
+        _groceryItems.insert(index, item);
+      });
+    }
   }
 
   @override
@@ -93,7 +107,6 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     if (_isLoading) {
       content = const Center(child: CircularProgressIndicator());
     }
-    
 
     if (_groceryItems.isNotEmpty) {
       content = ListView.builder(
