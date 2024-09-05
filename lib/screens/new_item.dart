@@ -44,7 +44,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
         }),
       );
 
-      if (!context.mounted) {
+      if (!mounted) {
         return;
       }
       Navigator.of(context).pop();

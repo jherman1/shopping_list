@@ -30,13 +30,13 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     final response = await http.get(url);
 
     final Map<String, dynamic> listData = json.decode(response.body);
-    final List<GroceryItem> _loadedItems = [];
+    final List<GroceryItem> loadedItems = [];
     for (final item in listData.entries) {
       final category = categories.entries
           .firstWhere((categroyItem) =>
               categroyItem.value.name == item.value['category'])
           .value;
-      _loadedItems.add(GroceryItem(
+      loadedItems.add(GroceryItem(
           id: item.key,
           name: item.value['name'],
           quantity: item.value['quantity'],
@@ -44,7 +44,7 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     }
 
     setState(() {
-      _groceryItems = _loadedItems;
+      _groceryItems = loadedItems;
     });
   }
 
@@ -56,13 +56,6 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
     );
 
     _loadItems();
-
-    // if (newItem == null) {
-    //   return;
-    // }
-    // setState(() {
-    //   _groceryItems.add(newItem);
-    // });
   }
 
   void _removeItem(GroceryItem item) {
