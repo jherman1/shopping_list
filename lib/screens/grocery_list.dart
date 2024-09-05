@@ -38,6 +38,13 @@ class _GroceryListScreenState extends State<GroceryListScreen> {
       });
     }
 
+    if(response.body == 'null') { //occurs when there is no data on the backend
+      setState(() {
+        _isLoading = false;
+      });
+      return;
+    }
+
     final Map<String, dynamic> listData = json.decode(response.body);
     final List<GroceryItem> loadedItems = [];
     for (final item in listData.entries) {
